@@ -1,0 +1,11 @@
+embeded/.pio
+embeded/.vscode/.browse.c_cpp.db*
+embeded/.vscode/c_cpp_properties.json
+embeded/.vscode/launch.json
+embeded/.vscode/ipch
+embeded/include/env.h
+embeded/.vscode
+api/__pycache__
+api/.env
+venv
+api/venv
