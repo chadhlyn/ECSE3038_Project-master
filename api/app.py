@@ -64,19 +64,19 @@ async def home():
 async def graph(request: Request):
     size = int(request.query_params.get('size'))
     readings = await update.find().sort('_id', -1).limit(size).to_list(size)
-    data_reading = []
+    data_info = []
     for reading in readings:
         temperature = reading.get("temperature")
         presence = reading.get("presence")
         current_time = reading.get("current_time")
 
-        data_reading.append({
+        data_info.append({
             "temperature": temperature,
             "presence": presence,
             "datetime": current_time
         })
 
-    return data_reading
+    return data_info
 
 @app.put('/settings')
 async def update_settings(request: Request):
