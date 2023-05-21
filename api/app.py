@@ -28,7 +28,7 @@ pydantic.json.ENCODERS_BY_TYPE[ObjectId] = str
 
 client = motor.motor_asyncio.AsyncIOMotorClient("mongodb+srv://horatiolyn:OeFONgBIzKZl69Ma@cluster0.zq6zvbv.mongodb.net/?retryWrites=true&w=majority")
 db = client.iot_platform
-sensor_readings = db['sensor_readings']
+sensor_data = db['sensor_data']
 data = db['data']
 
 
@@ -98,20 +98,20 @@ async def update_settings(request: Request):
         "light_time_off": str(new_user_light.time())
     }
 
-    obj = await sensor_readings.find().sort('_id', -1).limit(1).to_list(1)
+    obj = await sensor_data.find().sort('_id', -1).limit(1).to_list(1)
 
     if obj:
-        await sensor_readings.update_one({"_id": obj[0]["_id"]}, {"$set": output})
-        new_obj = await sensor_readings.find_one({"_id": obj[0]["_id"]})
+        await sensor_data.update_one({"_id": obj[0]["_id"]}, {"$set": output})
+        new_obj = await sensor_data.find_one({"_id": obj[0]["_id"]})
     else:
-        new = await sensor_readings.insert_one(output)
-        new_obj = await sensor_readings.find_one({"_id": new.inserted_id})
+        new = await sensor_data.insert_one(output)
+        new_obj = await sensor_data.find_one({"_id": new.inserted_id})
     return new_obj
 
 @app.post("/temperature")
 async def update_temperature(request: Request):
     state = await request.json()
-    param = await sensor_readings.find().sort('_id', -1).limit(1).to_list(1)
+    param = await sensor_data.find().sort('_id', -1).limit(1).to_list(1)
 
     if param:
         temperature = param[0]["user_temp"]
