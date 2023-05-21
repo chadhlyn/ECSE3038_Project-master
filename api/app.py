@@ -27,9 +27,9 @@ app.add_middleware(
 pydantic.json.ENCODERS_BY_TYPE[ObjectId] = str
 
 client = motor.motor_asyncio.AsyncIOMotorClient("mongodb+srv://horatiolyn:OeFONgBIzKZl69Ma@cluster0.zq6zvbv.mongodb.net/?retryWrites=true&w=majority")
-db = client.iot_platform
+db = client.sshub
 sensor_data = db['sensor_data']
-data = db['data']
+update = db['update']
 
 
 def get_sunset_time():
@@ -63,7 +63,7 @@ async def home():
 @app.get('/graph')
 async def graph(request: Request):
     size = int(request.query_params.get('size'))
-    readings = await data.find().sort('_id', -1).limit(size).to_list(size)
+    readings = await update.find().sort('_id', -1).limit(size).to_list(size)
     data_reading = []
     for reading in readings:
         temperature = reading.get("temperature")
@@ -129,13 +129,13 @@ async def update_temperature(request: Request):
     state["fan"] = ((float(state["temperature"]) >= temperature) and (state["presence"] == 1))
     state["current_time"] = str(datetime.datetime.now())
 
-    new_settings = await data.insert_one(state)
-    new_obj = await data.find_one({"_id": new_settings.inserted_id})
+    new_settings = await update.insert_one(state)
+    new_obj = await update.find_one({"_id": new_settings.inserted_id})
     return new_obj
 
 @app.get("/state")
 async def get_state():
-    last_entry = await data.find().sort('_id', -1).limit(1).to_list(1)
+    last_entry = await update.find().sort('_id', -1).limit(1).to_list(1)
 
     if not last_entry:
         return {
