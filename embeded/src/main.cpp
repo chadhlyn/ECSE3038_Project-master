@@ -4,7 +4,7 @@
 #include <ArduinoJson.h>
 #include "env.h"
 
-#define ENDPOINT "https://chadproject.onrender.com"
+#define ENDPOINT "chadproject.onrender.com"
 
 #define FAN_PIN 22
 #define LIGHT_PIN 23
@@ -52,7 +52,7 @@ void loop()
     HTTPClient http;
 
     // Establish a connection to the server
-    String url = "https://" + String(ENDPOINT) + "/info";
+    String url = "https://" + String(ENDPOINT) + "/temperature";
     http.begin(url);
     http.addHeader("Content-type", "application/json");
 
